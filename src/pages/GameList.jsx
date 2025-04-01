@@ -4,10 +4,12 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/card';
 import CardContent from '@mui/material/card';
 import config from '../api/config';
+import { Game } from '../generated/models/Game';
 
 export default function GameList() {
-  const [games, setGames] = useState([]);
-  const navigate = useNavigate();
+//  const [games, setGames] = useState([]);
+    const [games, setGames] = useState<Game[]>([]);
+    const navigate = useNavigate();
 
   useEffect(() => {
       fetch(`${config.API_BASE}/games`)
