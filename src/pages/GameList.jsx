@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/card';
+import CardContent from '@mui/material/card';
 import config from '../api/config';
 
 export default function GameList() {
@@ -9,7 +10,7 @@ export default function GameList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${config.API_BASE}/games`)
+      fetch(`${config.API_BASE}/games`)
       .then(res => res.json())
       .then(setGames);
   }, []);
