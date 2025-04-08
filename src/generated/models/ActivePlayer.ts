@@ -18,8 +18,8 @@
  * @export
  */
 export const ActivePlayer = {
-    Player1: 'player1',
-    Player2: 'player2'
+    Viking: 'Viking',
+    Monster: 'Monster'
 } as const;
 export type ActivePlayer = typeof ActivePlayer[keyof typeof ActivePlayer];
 

@@ -19,9 +19,10 @@ import type {
   Game,
   GameChangeNameRequest,
   GameCreateRequest,
+  MoveTileRequest,
   PagedGameResponse,
+  SelectTileRequest,
   SelectedTileInfo,
-  TilePosition,
 } from '../models/index';
 import {
     BoardFromJSON,
@@ -32,12 +33,14 @@ import {
     GameChangeNameRequestToJSON,
     GameCreateRequestFromJSON,
     GameCreateRequestToJSON,
+    MoveTileRequestFromJSON,
+    MoveTileRequestToJSON,
     PagedGameResponseFromJSON,
     PagedGameResponseToJSON,
+    SelectTileRequestFromJSON,
+    SelectTileRequestToJSON,
     SelectedTileInfoFromJSON,
     SelectedTileInfoToJSON,
-    TilePositionFromJSON,
-    TilePositionToJSON,
 } from '../models/index';
 
 export interface GamesGetRequest {
@@ -51,12 +54,12 @@ export interface GamesIdBoardGetRequest {
 
 export interface GamesIdBoardMoveTilePostRequest {
     id: string;
-    tilePosition: TilePosition;
+    moveTileRequest: MoveTileRequest;
 }
 
 export interface GamesIdBoardSelectTilePostRequest {
     id: string;
-    tilePosition: TilePosition;
+    selectTileRequest: SelectTileRequest;
 }
 
 export interface GamesIdBoardSelectedTileGetRequest {
@@ -96,6 +99,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
         const response = await this.request({
             path: `/games`,
             method: 'GET',
@@ -129,6 +136,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
         const response = await this.request({
             path: `/games/{id}/board`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
@@ -158,10 +169,10 @@ export class DefaultApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['tilePosition'] == null) {
+        if (requestParameters['moveTileRequest'] == null) {
             throw new runtime.RequiredError(
-                'tilePosition',
-                'Required parameter "tilePosition" was null or undefined when calling gamesIdBoardMoveTilePost().'
+                'moveTileRequest',
+                'Required parameter "moveTileRequest" was null or undefined when calling gamesIdBoardMoveTilePost().'
             );
         }
 
@@ -171,12 +182,16 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
         const response = await this.request({
             path: `/games/{id}/board/move-tile`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TilePositionToJSON(requestParameters['tilePosition']),
+            body: MoveTileRequestToJSON(requestParameters['moveTileRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -192,7 +207,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Select a tile
      */
-    async gamesIdBoardSelectTilePostRaw(requestParameters: GamesIdBoardSelectTilePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async gamesIdBoardSelectTilePostRaw(requestParameters: GamesIdBoardSelectTilePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Game>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -200,10 +215,10 @@ export class DefaultApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['tilePosition'] == null) {
+        if (requestParameters['selectTileRequest'] == null) {
             throw new runtime.RequiredError(
-                'tilePosition',
-                'Required parameter "tilePosition" was null or undefined when calling gamesIdBoardSelectTilePost().'
+                'selectTileRequest',
+                'Required parameter "selectTileRequest" was null or undefined when calling gamesIdBoardSelectTilePost().'
             );
         }
 
@@ -213,22 +228,27 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
         const response = await this.request({
             path: `/games/{id}/board/select-tile`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TilePositionToJSON(requestParameters['tilePosition']),
+            body: SelectTileRequestToJSON(requestParameters['selectTileRequest']),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => GameFromJSON(jsonValue));
     }
 
     /**
      * Select a tile
      */
-    async gamesIdBoardSelectTilePost(requestParameters: GamesIdBoardSelectTilePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.gamesIdBoardSelectTilePostRaw(requestParameters, initOverrides);
+    async gamesIdBoardSelectTilePost(requestParameters: GamesIdBoardSelectTilePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Game> {
+        const response = await this.gamesIdBoardSelectTilePostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -245,6 +265,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
 
         const response = await this.request({
             path: `/games/{id}/board/selected-tile`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
@@ -278,6 +302,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
 
         const response = await this.request({
             path: `/games/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
@@ -314,6 +342,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
         const response = await this.request({
             path: `/games`,
             method: 'PATCH',
@@ -349,6 +381,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
 
         const response = await this.request({
             path: `/games`,

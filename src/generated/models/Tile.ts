@@ -12,12 +12,44 @@
  * Do not edit the class manually.
  */
 
-
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
+ * @interface Tile
  */
-export const Tile = {
+export interface Tile {
+    /**
+     * 
+     * @type {string}
+     * @memberof Tile
+     */
+    figure: TileFigureEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Tile
+     */
+    isSelected?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Tile
+     */
+    isEnabled?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Tile
+     */
+    isMoveEnabled?: boolean;
+}
+
+
+/**
+ * @export
+ */
+export const TileFigureEnum = {
     Empty: 'Empty',
     Odin: 'Odin',
     Monster: 'Monster',
@@ -25,18 +57,44 @@ export const Tile = {
     Throne: 'Throne',
     Exit: 'Exit'
 } as const;
-export type Tile = typeof Tile[keyof typeof Tile];
+export type TileFigureEnum = typeof TileFigureEnum[keyof typeof TileFigureEnum];
 
+
+/**
+ * Check if a given object implements the Tile interface.
+ */
+export function instanceOfTile(value: object): boolean {
+    if (!('figure' in value)) return false;
+    return true;
+}
 
 export function TileFromJSON(json: any): Tile {
     return TileFromJSONTyped(json, false);
 }
 
 export function TileFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tile {
-    return json as Tile;
+    if (json == null) {
+        return json;
+    }
+    return {
+        
+        'figure': json['figure'],
+        'isSelected': json['isSelected'] == null ? undefined : json['isSelected'],
+        'isEnabled': json['isEnabled'] == null ? undefined : json['isEnabled'],
+        'isMoveEnabled': json['isMoveEnabled'] == null ? undefined : json['isMoveEnabled'],
+    };
 }
 
 export function TileToJSON(value?: Tile | null): any {
-    return value as any;
+    if (value == null) {
+        return value;
+    }
+    return {
+        
+        'figure': value['figure'],
+        'isSelected': value['isSelected'],
+        'isEnabled': value['isEnabled'],
+        'isMoveEnabled': value['isMoveEnabled'],
+    };
 }
 

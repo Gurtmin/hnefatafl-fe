@@ -13,24 +13,18 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ActivePlayer } from './ActivePlayer';
-import {
-    ActivePlayerFromJSON,
-    ActivePlayerFromJSONTyped,
-    ActivePlayerToJSON,
-} from './ActivePlayer';
 import type { Board } from './Board';
 import {
     BoardFromJSON,
     BoardFromJSONTyped,
     BoardToJSON,
 } from './Board';
-import type { Player } from './Player';
+import type { GamePlayers } from './GamePlayers';
 import {
-    PlayerFromJSON,
-    PlayerFromJSONTyped,
-    PlayerToJSON,
-} from './Player';
+    GamePlayersFromJSON,
+    GamePlayersFromJSONTyped,
+    GamePlayersToJSON,
+} from './GamePlayers';
 import type { State } from './State';
 import {
     StateFromJSON,
@@ -64,22 +58,10 @@ export interface Game {
     state: State;
     /**
      * 
-     * @type {ActivePlayer}
+     * @type {GamePlayers}
      * @memberof Game
      */
-    activePlayer: ActivePlayer;
-    /**
-     * 
-     * @type {Player}
-     * @memberof Game
-     */
-    player1: Player;
-    /**
-     * 
-     * @type {Player}
-     * @memberof Game
-     */
-    player2: Player;
+    players: GamePlayers;
     /**
      * 
      * @type {Board}
@@ -95,9 +77,7 @@ export function instanceOfGame(value: object): boolean {
     if (!('id' in value)) return false;
     if (!('type' in value)) return false;
     if (!('state' in value)) return false;
-    if (!('activePlayer' in value)) return false;
-    if (!('player1' in value)) return false;
-    if (!('player2' in value)) return false;
+    if (!('players' in value)) return false;
     if (!('board' in value)) return false;
     return true;
 }
@@ -115,9 +95,7 @@ export function GameFromJSONTyped(json: any, ignoreDiscriminator: boolean): Game
         'id': json['id'],
         'type': json['type'],
         'state': StateFromJSON(json['state']),
-        'activePlayer': ActivePlayerFromJSON(json['activePlayer']),
-        'player1': PlayerFromJSON(json['player1']),
-        'player2': PlayerFromJSON(json['player2']),
+        'players': GamePlayersFromJSON(json['players']),
         'board': BoardFromJSON(json['board']),
     };
 }
@@ -131,9 +109,7 @@ export function GameToJSON(value?: Game | null): any {
         'id': value['id'],
         'type': value['type'],
         'state': StateToJSON(value['state']),
-        'activePlayer': ActivePlayerToJSON(value['activePlayer']),
-        'player1': PlayerToJSON(value['player1']),
-        'player2': PlayerToJSON(value['player2']),
+        'players': GamePlayersToJSON(value['players']),
         'board': BoardToJSON(value['board']),
     };
 }

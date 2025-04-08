@@ -1,0 +1,31 @@
+.tile-button {
+    display: block;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+    transition: border 0.2s ease;
+}
+
+.tile-selected {
+    background-color: #ff7b00;
+}
+
+.tile-move-enabled {
+    background-color: #00ff7b;
+}
+
+.tile-button:hover {
+    border-color: #007bff;
+}
+
+.tile-button:active {
+    border-color: #0056b3;
+}
+
+table {
+    border-collapse: collapse;
+}
+td {
+    padding: 0;
+}
