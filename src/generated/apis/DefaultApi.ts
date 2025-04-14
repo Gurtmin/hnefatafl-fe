@@ -19,6 +19,8 @@ import type {
   Game,
   GameChangeNameRequest,
   GameCreateRequest,
+  JoinPlayerRequest,
+  JoinPlayerResponse,
   MoveTileRequest,
   PagedGameResponse,
   SelectTileRequest,
@@ -33,6 +35,10 @@ import {
     GameChangeNameRequestToJSON,
     GameCreateRequestFromJSON,
     GameCreateRequestToJSON,
+    JoinPlayerRequestFromJSON,
+    JoinPlayerRequestToJSON,
+    JoinPlayerResponseFromJSON,
+    JoinPlayerResponseToJSON,
     MoveTileRequestFromJSON,
     MoveTileRequestToJSON,
     PagedGameResponseFromJSON,
@@ -68,6 +74,11 @@ export interface GamesIdBoardSelectedTileGetRequest {
 
 export interface GamesIdGetRequest {
     id: string;
+}
+
+export interface GamesIdJoinPostRequest {
+    id: string;
+    joinPlayerRequest: JoinPlayerRequest;
 }
 
 export interface GamesPatchRequest {
@@ -322,6 +333,53 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async gamesIdGet(requestParameters: GamesIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Game> {
         const response = await this.gamesIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Try to change player
+     */
+    async gamesIdJoinPostRaw(requestParameters: GamesIdJoinPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JoinPlayerResponse>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling gamesIdJoinPost().'
+            );
+        }
+
+        if (requestParameters['joinPlayerRequest'] == null) {
+            throw new runtime.RequiredError(
+                'joinPlayerRequest',
+                'Required parameter "joinPlayerRequest" was null or undefined when calling gamesIdJoinPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Client-ID"] = await this.configuration.apiKey("X-Client-ID"); // ClientIdAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/games/{id}/join`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: JoinPlayerRequestToJSON(requestParameters['joinPlayerRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => JoinPlayerResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Try to change player
+     */
+    async gamesIdJoinPost(requestParameters: GamesIdJoinPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<JoinPlayerResponse> {
+        const response = await this.gamesIdJoinPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

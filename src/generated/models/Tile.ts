@@ -52,6 +52,8 @@ export interface Tile {
 export const TileFigureEnum = {
     Empty: 'Empty',
     Odin: 'Odin',
+    DeadOdin: 'DeadOdin',
+    EscapedOdin: 'EscapedOdin',
     Monster: 'Monster',
     Warrior: 'Warrior',
     Throne: 'Throne',

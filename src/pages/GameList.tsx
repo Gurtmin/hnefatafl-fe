@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
-import getClientId from './Global';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function GameList() {
     const [games, setGames] = useState<Game[]>([]);
@@ -58,11 +58,8 @@ export default function GameList() {
       };
 
       handleClose();
-      api.gamesPost(request,{
-          headers: {
-              'X-Client-ID': getClientId()
-          }
-      })
+      api.gamesPost(request
+      )
           .then((response) => {
               toast.success(`Hra s nazvem ${type} vytvorena`);
               setGameCreated(true);
@@ -103,10 +100,10 @@ export default function GameList() {
                             </Typography>
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                                 <Typography variant="body2" color="text.secondary">
-                                    {game.activePlayer??"Over"}
+                                    {game.players.active??"Over"}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    {game.round??"-"}
+                                    {game.players.me??"-"}
                                 </Typography>
                             </Box>
                         </Box>

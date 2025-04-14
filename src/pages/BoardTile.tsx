@@ -5,10 +5,12 @@ import { useGame } from '../context/GameContext';
 const tileImageMap: Record<TileFigureEnum, string> = {
     Empty: "/assets/tiles/free.svg",
     Odin: "/assets/tiles/odin.svg",
-    Monster: "/assets/tiles/beast.svg",
-    Warrior: "/assets/tiles/viking.svg",
-    Throne: "/assets/tiles/impassable.svg",
-    Exit: "/assets/tiles/impassable.svg",
+    DeadOdin: "/assets/tiles/deadOdin.svg",
+    EscapedOdin: "/assets/tiles/escapedOdin.svg",
+    Monster: "/assets/tiles/viking.svg",
+    Warrior: "/assets/tiles/beast.svg",
+    Throne: "/assets/tiles/throne.svg",
+    Exit: "/assets/tiles/exit.svg",
 };
 
 interface IndexedBoardTile extends Tile {
@@ -16,17 +18,19 @@ interface IndexedBoardTile extends Tile {
     colIndex: number;
 }
 
-const BoardTile: React.FC<IndexedBoardTile> = ({ tile, rowIndex, colIndex }) => {
+const BoardTile: React.FC<IndexedBoardTile> = ({ tile, rowIndex, colIndex, isActivePlayerConnected }) => {
     const { handleTileClick } = useGame();
 
     return (
-        <td>
+        <td className="table-tile">
             <input
-                className={`tile-button ${tile.isSelected ? 'tile-selected' : ''} ${tile.isMoveEnabled ? 'tile-move-enabled' : ''}`}
+                className={
+                    `tile-button
+                    ${tile.isSelected ? isActivePlayerConnected ? 'tile-selected tile-blink' : 'tile-selected-opponent tile-blink' : ''}
+                    ${tile.isMoveEnabled ? isActivePlayerConnected ? 'tile-move-enabled' : 'tile-move-enabled-opponent' : ''}
+                 `}
                 // className={`tile ${selected ? 'selected' : ''}`}
                 type="image"
-                height="40px"
-                width="40px"
                 alt={tile.figure[0]}
                 src={tileImageMap[tile.figure] || "/assets/tiles/Empty.svg"}
                 onClick={() => handleTileClick(rowIndex,colIndex)}

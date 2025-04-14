@@ -25,6 +25,12 @@ import {
     PlayerFromJSONTyped,
     PlayerToJSON,
 } from './Player';
+import type { PlayerEnum } from './PlayerEnum';
+import {
+    PlayerEnumFromJSON,
+    PlayerEnumFromJSONTyped,
+    PlayerEnumToJSON,
+} from './PlayerEnum';
 
 /**
  * 
@@ -34,10 +40,10 @@ import {
 export interface GamePlayers {
     /**
      * 
-     * @type {ActivePlayer}
+     * @type {PlayerEnum}
      * @memberof GamePlayers
      */
-    me?: ActivePlayer;
+    me?: PlayerEnum;
     /**
      * 
      * @type {ActivePlayer}
@@ -76,7 +82,7 @@ export function GamePlayersFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'me': json['me'] == null ? undefined : ActivePlayerFromJSON(json['me']),
+        'me': json['me'] == null ? undefined : PlayerEnumFromJSON(json['me']),
         'active': ActivePlayerFromJSON(json['active']),
         'viking': json['viking'] == null ? undefined : PlayerFromJSON(json['viking']),
         'monster': json['monster'] == null ? undefined : PlayerFromJSON(json['monster']),
@@ -89,7 +95,7 @@ export function GamePlayersToJSON(value?: GamePlayers | null): any {
     }
     return {
         
-        'me': ActivePlayerToJSON(value['me']),
+        'me': PlayerEnumToJSON(value['me']),
         'active': ActivePlayerToJSON(value['active']),
         'viking': PlayerToJSON(value['viking']),
         'monster': PlayerToJSON(value['monster']),

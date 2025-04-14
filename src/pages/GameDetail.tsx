@@ -3,29 +3,63 @@ import { useParams, Link } from 'react-router-dom';
 import { Game } from '../generated/models/Game';
 import {api} from "../lib/api.ts";
 import BoardRow from "./BoardRow";
-import {GamesIdBoardMoveTilePostRequest, GamesIdBoardSelectTilePostRequest, GamesIdGetRequest} from "../generated";
-import { GameContext } from '../context/GameContext';
 import {
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    FormControl,
-    FormLabel,
-} from '@mui/material';
+    GamesIdBoardSelectTilePostRequest,
+    GamesIdGetRequest,
+    GamesIdJoinPostRequest,
+    PlayerEnum
+} from "../generated";
+import { GameContext } from '../context/GameContext';
+import ModalGameRules from "@/pages/ModalGameRules";
+import BoardHeader from "@/pages/BoardHeader";
+import ModalSwitchPlayer from "@/pages/ModalSwitchPlayer";
+
 
 export default function GameDetail() {
     const {id} = useParams<{ id: string }>();
     const [game, setGame] = useState<Game | null>(null);
+    const [loggedUser, setLoggedUser] = useState<PlayerEnum>(PlayerEnum.None);
+    const [isModalRulesOpen, setModalRulesOpen] = useState(false);
+    const [isModalSwitchPlayerOpen, setModalSwitchPlayerOpen] = useState(false);
+
+    const openModalSwitchPlayer = () =>{
+        setModalSwitchPlayerOpen(true);
+    }
+    const closeModalSwitchPlayer = () => setModalSwitchPlayerOpen(false);
 
     useEffect(() => {
         api.gamesIdGet({id} as GamesIdGetRequest)
             .then((response) => {
                 setGame(response);
+                setLoggedUser(response.players?.me ?? PlayerEnum.None);
             })
             .catch((error) => {
                 console.error('Chyba při načítání her:', error);
             });
-    }, [id]);
+    }, [id, loggedUser]);
+
+    const showHelp = () => {
+        setModalRulesOpen(true);
+    }
+
+    const changeActivePlayer = (playerString: PlayerEnum) => {
+        const requestParams: GamesIdJoinPostRequest = {
+            id: id,
+            joinPlayerRequest: {
+                player: playerString,
+            },
+        } as GamesIdJoinPostRequest;
+        console.log('Clicked to: ', playerString);
+
+        api.gamesIdJoinPost(requestParams)
+            .then((response) => {
+                setLoggedUser(response?.player ?? PlayerEnum.None);
+                setModalSwitchPlayerOpen( false);
+            })
+            .catch((error) => {
+                console.error('Chyba při join:', error);
+            });
+    }
 
     const handleTileClick = (rowIndex, colIndex) => {
         const requestParams: GamesIdBoardSelectTilePostRequest={
@@ -43,40 +77,26 @@ export default function GameDetail() {
             .catch((error) => {
                 console.error('Chyba při načítání her:', error);
             });
-
-        // console.log('XXX selectTile - row: ' + rowIndex + ", col: " + colIndex);
     };
 
     if (!game) return <div className="p-4">Loading...</div>;
 
+    const isActivePlayerConnected = (game?.players.active == game?.players.me || game?.players.me == PlayerEnum.Both)
+
     return (
-        <GameContext.Provider value={{ handleTileClick }}>
-            <h1 className="text-xl font-bold">{game.type}</h1>
-            <div className="p-4 space-y-4">
-                <FormControl>
-                    <FormLabel id="game-type-label">Aktuální hráč</FormLabel>
-                    <RadioGroup
-                        row
-                        aria-labelledby="game-type-label"
-                        name="game-type"
-                        value={game.players.me}
-                        // onChange={handleChange}
-                    >
-                        <FormControlLabel value="Viking" control={<Radio />} label="Vikingové" />
-                        <FormControlLabel value="Monster" control={<Radio />} label="Monstra" />
-                    </RadioGroup>
-                </FormControl>
-                <table>
+        <GameContext.Provider value={{ handleTileClick, closeModalSwitchPlayer, openModalSwitchPlayer, changeActivePlayer, showHelp }}>
+            <div className="table-container">
+                <BoardHeader game={game}/>
+                <table className="table-content">
                     <tbody>
                     {game.board.rows.map((row,index) => (
-                        <BoardRow cols={row.cols} rowIndex={index}/>
+                        <BoardRow key={index} cols={row.cols} rowIndex={index} isActivePlayerConnected={isActivePlayerConnected}/>
                     ))}
                     </tbody>
                 </table>
-                <Link to="/games" className="text-blue-600 underline">Back to Games</Link>
-
-                <pre className="bg-gray-100 p-4 rounded">{JSON.stringify(game, null, 2)}</pre>
             </div>
+            <ModalGameRules open={isModalRulesOpen}/>
+            <ModalSwitchPlayer game={game} open={isModalSwitchPlayerOpen}/>
         </GameContext.Provider>
     );
 
