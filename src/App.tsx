@@ -6,6 +6,8 @@ import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
+  console.log("✅ APP start");
+
   return (
     <>
       <Router>
