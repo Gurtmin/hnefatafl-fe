@@ -44,6 +44,7 @@ export default function GameList() {
     }
 
     useEffect(() => {
+        console.log("✅ GameList");
         refreshList();
         if (gameCreated) {
             setGameCreated(false);
