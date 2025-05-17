@@ -82,7 +82,7 @@
 
 .table-content {
     width: 100%;
-    maxWidth: 70ch;
+    max-width: 70ch;
     margin: 0 auto;
     table-layout: fixed;
 }

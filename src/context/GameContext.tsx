@@ -12,6 +12,8 @@ export const GameContext = createContext({
     },
     closeModalSwitchPlayer: () => {
     },
+    closeModalGameRules: () => {
+    },
     showHelp: () => {
     }
 })

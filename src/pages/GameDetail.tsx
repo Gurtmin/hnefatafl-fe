@@ -26,6 +26,7 @@ export default function GameDetail() {
         setModalSwitchPlayerOpen(true);
     }
     const closeModalSwitchPlayer = () => setModalSwitchPlayerOpen(false);
+    const closeModalGameRules = () => setModalRulesOpen(false);
 
     useEffect(() => {
         api.gamesIdGet({id} as GamesIdGetRequest)
@@ -84,7 +85,7 @@ export default function GameDetail() {
     const isActivePlayerConnected = (game?.players.active == game?.players.me || game?.players.me == PlayerEnum.Both)
 
     return (
-        <GameContext.Provider value={{ handleTileClick, closeModalSwitchPlayer, openModalSwitchPlayer, changeActivePlayer, showHelp }}>
+        <GameContext.Provider value={{ handleTileClick, closeModalSwitchPlayer, openModalSwitchPlayer, changeActivePlayer, showHelp, closeModalGameRules }}>
             <div className="table-container">
                 <BoardHeader game={game}/>
                 <table className="table-content">

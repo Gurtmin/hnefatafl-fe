@@ -1,14 +1,17 @@
 import { Dialog, DialogContent, DialogTitle, Box } from "@mui/material";
 import React from "react";
 import IconInText from "@/pages/IconInText";
+import {useGame} from "@/context/GameContext";
 
 interface GameRulesModalProps {
     open: boolean;
 }
 
 const ModalGameRules: React.FC<GameRulesModalProps> = ({ open}) => {
+    const { closeModalGameRules } = useGame();
+
     return (
-        <Dialog open={open} slotProps={{
+        <Dialog open={open} onClose={closeModalGameRules} slotProps={{
             paper: {
                 sx: {
                     backgroundImage: 'url(/assets/textures/wooden_desk_01.jpg)',
