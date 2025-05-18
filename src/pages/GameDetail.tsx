@@ -30,21 +30,24 @@ export default function GameDetail() {
     const closeModalGameRules = () => setModalRulesOpen(false);
 
     useEffect(() => {
-        api.gamesIdGet({id} as GamesIdGetRequest)
-            .then((response) => {
-                setGame(response);
-                setLoggedUser(response.players?.me ?? PlayerEnum.None);
-            })
-            .catch((error) => {
-                console.error('Chyba při načítání her:', error);
-            });
+        const fetchGame = () => {
+            api.gamesIdGet({id} as GamesIdGetRequest)
+                .then((response) => {
+                    setGame(response);
+                    setLoggedUser(response.players?.me ?? PlayerEnum.None);
+                })
+                .catch((error) => {
+                    console.error('Chyba při načítání her:', error);
+                });
+        }
 
+        fetchGame();
         const socket = connectWebSocket((msg) => {
             console.log("🔥 UPDATE:", msg);
-            // refreshList(); // aktualizace hry
+            fetchGame(); // TODO tohle pak upravime na konkretni typ zpravy
         });
         return () => socket.close();
-    }, [id, loggedUser]);
+    }, [id]);
 
     const showHelp = () => {
         setModalRulesOpen(true);
