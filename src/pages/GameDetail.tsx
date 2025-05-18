@@ -13,6 +13,7 @@ import { GameContext } from '../context/GameContext';
 import ModalGameRules from "@/pages/ModalGameRules";
 import BoardHeader from "@/pages/BoardHeader";
 import ModalSwitchPlayer from "@/pages/ModalSwitchPlayer";
+import {connectWebSocket} from "@/services/websocket";
 
 
 export default function GameDetail() {
@@ -37,6 +38,12 @@ export default function GameDetail() {
             .catch((error) => {
                 console.error('Chyba při načítání her:', error);
             });
+
+        const socket = connectWebSocket((msg) => {
+            console.log("🔥 UPDATE:", msg);
+            // refreshList(); // aktualizace hry
+        });
+        return () => socket.close();
     }, [id, loggedUser]);
 
     const showHelp = () => {
