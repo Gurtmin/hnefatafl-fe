@@ -66,6 +66,7 @@ export default function GameDetail() {
             .then((response) => {
                 setLoggedUser(response?.player ?? PlayerEnum.None);
                 // TODO oddelat loggedUser z useEffect a zde odladit, proc pri tomto se to nerefreshne
+                // TODO kdyz OVER, tak nema jit s nicim jiz hybat
                 setModalSwitchPlayerOpen( false);
             })
             .catch((error) => {
@@ -97,15 +98,17 @@ export default function GameDetail() {
 
     return (
         <GameContext.Provider value={{ handleTileClick, closeModalSwitchPlayer, openModalSwitchPlayer, changeActivePlayer, showHelp, closeModalGameRules }}>
-            <div className="table-container">
+            <div className="table-content">
                 <BoardHeader game={game}/>
-                <table className="table-content">
-                    <tbody>
-                    {game.board.rows.map((row,index) => (
-                        <BoardRow key={index} cols={row.cols} rowIndex={index} isActivePlayerConnected={isActivePlayerConnected}/>
-                    ))}
-                    </tbody>
-                </table>
+                <div className="table-container">
+                    <table className="table-content">
+                        <tbody>
+                        {game.board.rows.map((row,index) => (
+                            <BoardRow key={index} cols={row.cols} rowIndex={index} isActivePlayerConnected={isActivePlayerConnected}/>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <ModalGameRules open={isModalRulesOpen}/>
             <ModalSwitchPlayer game={game} open={isModalSwitchPlayerOpen}/>

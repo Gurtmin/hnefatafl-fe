@@ -15,7 +15,7 @@ export default function GameList() {
     const [games, setGames] = useState<Game[]>([]);
     const [gameName, setGameName] = useState('');
 
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const [pageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [gameCreated, setGameCreated] = useState(true);
