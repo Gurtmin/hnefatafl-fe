@@ -47,7 +47,7 @@ export default function GameDetail() {
             fetchGame(); // TODO tohle pak upravime na konkretni typ zpravy
         });
         return () => socket.close();
-    }, [id]);
+    }, [id, loggedUser]);
 
     const showHelp = () => {
         setModalRulesOpen(true);
@@ -65,6 +65,7 @@ export default function GameDetail() {
         api.gamesIdJoinPost(requestParams)
             .then((response) => {
                 setLoggedUser(response?.player ?? PlayerEnum.None);
+                // TODO oddelat loggedUser z useEffect a zde odladit, proc pri tomto se to nerefreshne
                 setModalSwitchPlayerOpen( false);
             })
             .catch((error) => {
