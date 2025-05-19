@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/Card';
 import { Game } from '../generated/models/Game';
 import {api} from "../lib/api.ts";
-import {Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, CardActionArea} from '@mui/material'
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Typography,
+    Tooltip
+} from '@mui/material'
 import {GamesPostRequest} from "../generated/apis/DefaultApi";
 import { toast } from 'react-toastify';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from 'uuid';
+import {PlayerEnum} from "@/generated";
+import {
+    connectedPlayerImageMap,
+    connectedPlayerTooltipMap,
+    activePlayerImageMap,
+    activePlayerTooltipMap
+} from "@/constants/ConnectedPlayer";
 
 export default function GameList() {
     const [games, setGames] = useState<Game[]>([]);
     const [gameName, setGameName] = useState('');
 
     const [page, setPage] = useState(0);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(6);
     const [totalPages, setTotalPages] = useState(0);
     const [gameCreated, setGameCreated] = useState(true);
     const [selectedCard, setSelectedCard] = React.useState(0);
@@ -74,56 +85,52 @@ export default function GameList() {
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-xl font-bold">Games</h1>
-        <Button onClick={handleOpen}>Nová hra</Button>
-      <div className="grid gap-4">
-        <Stack spacing={2}>
-        {games.map((game,index)=> (
-            <Card>
-                <CardActionArea
-                    // onClick={() => setSelectedCard(index)}
-                    onClick={() => goToDetail(game.id)}
-                    // data-active={selectedCard === index ? '' : undefined}
-                    sx={{
-                        height: '100%',
-                        '&[data-active]': {
-                            backgroundColor: 'action.selected',
-                            '&:hover': {
-                                backgroundColor: 'action.selectedHover',
-                            },
-                        },
-                    }}
-                >
-                    <CardContent sx={{ height: '100%' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="h5" component="div">
-                                {game.type}
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                <Typography variant="body2" color="text.secondary">
-                                    {game.players.active??"Over"}
+        <div className="Wrapper">
+            <div className="Content horizontal">
+                <div className="AddButton Container rotated fit" onClick={handleOpen}>
+                    + Nová hra
+                </div>
+                <div className="GameList">
+                    {games.map((game,index)=> (
+                        <div className="Container rotated" onClick={() => goToDetail(game.id)}>
+                            <div className="GameListItem">
+                                <Typography variant="h5" component="div" className="GameListItemCaption">
+                                    {game.type}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {game.players.me??"-"}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        ))}
-        </Stack>
-      </div>
-        <div className="flex justify-center items-center gap-4 mt-4">
-            <Button
-                onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                disabled={page === 0}
-            >Předchozí</Button>
-            <span>Stránka {page + 1} / {totalPages}</span>
-            <Button
-                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                disabled={page + 1 >= totalPages}
-            >Další</Button>
+                                <div className="GamePanelTableText signedAsLabel">Přihlášen jako</div>
+                                <Tooltip className="GamePanelTableImage signedAsValue" title={connectedPlayerTooltipMap[game.players.me ?? PlayerEnum.None]}>
+                                    <img
+                                        src={connectedPlayerImageMap[game.players.me ?? PlayerEnum.None]}
+                                        alt=""
+                                        // onClick={openModalSwitchPlayer}
+                                        className="GamePanelTableImage signedAsValue"
+                                    />
+                                </Tooltip>
+
+                                <div className="GamePanelTableText activePlayerLabel">Aktivní hráč</div>
+                                <Tooltip className="GamePanelTableImage activePlayerValue" title={activePlayerTooltipMap[game.players.active]}>
+                                    <img
+                                        src={activePlayerImageMap[game.players.active]}
+                                        alt=""
+                                        className="GamePanelTableImage activePlayerValue"
+                                    />
+                                </Tooltip>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex justify-center items-center gap-4 mt-4 order-1">
+                    <Button
+                        onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+                        disabled={page === 0}
+                    >Předchozí</Button>
+                    <span>Stránka {page + 1} / {totalPages}</span>
+                    <Button
+                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
+                        disabled={page + 1 >= totalPages}
+                    >Další</Button>
+                </div>
+            </div>
         </div>
 
         <Dialog open={open} onClose={handleClose}>

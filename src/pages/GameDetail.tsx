@@ -98,16 +98,18 @@ export default function GameDetail() {
 
     return (
         <GameContext.Provider value={{ handleTileClick, closeModalSwitchPlayer, openModalSwitchPlayer, changeActivePlayer, showHelp, closeModalGameRules }}>
-            <div className="table-content">
-                <BoardHeader game={game}/>
-                <div className="table-container">
-                    <table className="table-content">
-                        <tbody>
-                        {game.board.rows.map((row,index) => (
-                            <BoardRow key={index} cols={row.cols} rowIndex={index} isActivePlayerConnected={isActivePlayerConnected}/>
-                        ))}
-                        </tbody>
-                    </table>
+            <div className="Wrapper">
+                <div className="Content">
+                    <div className="Container">
+                        <div className="GameTable">
+                            {game.board.rows.map((row,index) => (
+                                <BoardRow key={index} cols={row.cols} rowIndex={index} isActivePlayerConnected={isActivePlayerConnected}/>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="Container cover">
+                        <BoardHeader game={game}/>
+                    </div>
                 </div>
             </div>
             <ModalGameRules open={isModalRulesOpen}/>
@@ -117,7 +119,7 @@ export default function GameDetail() {
 
     function BoardCell(props) {
         return (
-            <td>
+            <div>
                 <input
                     className="CELL"
                     type="image"
@@ -126,7 +128,7 @@ export default function GameDetail() {
                     alt="CELL"
                     src="cell.png"
                 />
-            </td>
+            </div>
         );
     }
 }

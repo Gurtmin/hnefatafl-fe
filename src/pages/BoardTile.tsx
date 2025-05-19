@@ -22,7 +22,7 @@ const BoardTile: React.FC<IndexedBoardTile> = ({ tile, rowIndex, colIndex, isAct
     const { handleTileClick } = useGame();
 
     return (
-        <td className="table-tile">
+        <div className="GameTableCell">
             <input
                 className={
                     `tile-button
@@ -35,7 +35,7 @@ const BoardTile: React.FC<IndexedBoardTile> = ({ tile, rowIndex, colIndex, isAct
                 src={tileImageMap[tile.figure] || "/assets/tiles/Empty.svg"}
                 onClick={() => handleTileClick(rowIndex,colIndex)}
             />
-        </td>
+        </div>
     );
 };
 
