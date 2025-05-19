@@ -7,14 +7,13 @@ interface IndexedBoardRow extends BoardRowsInner {
 
 const BoardRow: React.FC<IndexedBoardRow> = ({ cols, rowIndex, isActivePlayerConnected}) => {
     return (
-        <tr>
+        <div className="GameTableRow">
             {
-
                 cols?.map((tile, colIndex) => (
                     <BoardTile key={colIndex} tile={tile} rowIndex={rowIndex} colIndex={colIndex} isActivePlayerConnected={isActivePlayerConnected}/>
                 ))
             }
-        </tr>
+        </div>
     );
 };
 
